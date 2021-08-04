@@ -11,6 +11,7 @@
         "dist/typings/"
     ],
     "license": "MIT",
+    "homepage": "https://github.com/pseudoselector/steadystate#readme",
     "scripts": {
         "start": "rollup -c --watch --environment SERVE:true",
         "build": "npm run test && rollup -c",
