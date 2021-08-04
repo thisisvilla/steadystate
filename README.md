@@ -189,9 +189,6 @@ npm install @reduxjs/toolkit react-redux
 yarn add @reduxjs/toolkit react-redux
 ```
 
-...and here's another example setting up some `uiState`, including the steps for
-setting up your `Redux Store`:
-
 Step 1 - Create your Redux store...
 
 ```javascript
