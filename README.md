@@ -211,9 +211,7 @@ import { store } from 'state/store'
 export default function App({ Component, pageProps }) {
     return (
         <Provider store={store}>
-            <div id='app'>
-                <Component {...pageProps} />
-            </div>
+            <Component {...pageProps} />
         </Provider>
     )
 }
@@ -238,23 +236,7 @@ export const { uiReducer, useUiState } = uiState
 export function useUi() {
     const state = useUiState()
 
-    useEffect(() => {
-        const isTouchScreen = 'ontouchstart' in document.documentElement
-
-        if (isTouchScreen) return state.setIsTouch(true)
-
-        return state.setIsTouch(false)
-    }, [])
-
-    useEffect(() => {
-        if (state.menuActive) return (document.body.style.overflow = 'hidden')
-
-        return (document.body.style.overflow = 'auto')
-    }, [state.menuActive])
-
-    return {
-        ...state,
-    }
+    return { ...state }
 }
 ```
 
