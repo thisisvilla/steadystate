@@ -1,6 +1,6 @@
 {
     "name": "steadystate",
-    "version": "0.3.2",
+    "version": "0.3.3",
     "description": "The easiest way to use Redux with React!",
     "author": "@pseudoselector",
     "main": "dist/umd/steadystate.js",

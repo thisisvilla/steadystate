@@ -89,20 +89,27 @@ export function useTodos() {
         state.setTodos([])
     }
 
-    const addTodo = todo => {
-        state.setItems([
-            ...items,
-            todo
-        ])
-        // persist to db
+     const addTodo = async todo => {
+        state.setItems([...items, todo])
+
+        // 'await' your persist to db function here
     }
 
-    //...other stuff like delete todo, or whatever
+    const deleteTodo = async id => {
+        const newItems = state.items.filter(item => item.id !== id)
+
+        state.setItems(newItems)
+
+        // 'await' your persist to db function here
+    }
+
+    //...other actions, like updateTodo or whatever, here
 
     return {
         ...state,
         resetTodos,
-        addTodo
+        addTodo,
+        deleteTodo
     }
 }
 ```
@@ -134,16 +141,27 @@ export function useTodos() {
         state.setTodos([])
     }
 
-    const addTodo = todo => {
+    const addTodo = async todo => {
         state.setItems([...items, todo])
+
+        // 'await' your persist to db function here
     }
 
-    //...other stuff like delete todo, or whatever
+    const deleteTodo = async id => {
+        const newItems = state.items.filter(item => item.id !== id)
+
+        state.setItems(newItems)
+
+        // 'await' your persist to db function here
+    }
+
+    //...other actions, like updateTodo or whatever, here
 
     return {
         ...state,
         resetTodos,
         addTodo,
+        deleteTodo,
     }
 }
 ```
@@ -229,12 +247,15 @@ const uiState = createSteadyState('ui', {
     menuActive: false,
     isDragging: false,
     isTouch: null,
+    lang: 'en',
 })
 
 export const { uiReducer, useUiState } = uiState
 
 export function useUi() {
     const state = useUiState()
+
+    // define your actions as functions here...
 
     return { ...state }
 }
