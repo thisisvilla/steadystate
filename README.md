@@ -51,7 +51,7 @@ It returns an object with the following three items:
     //store.js
     import { configureStore } from '@reduxjs/toolkit'
 
-    import { todos } from './useTodos.js'
+    import { todos } from './useTodos'
 
     export const store = configureStore({
         reducer: {
@@ -121,7 +121,7 @@ export function useTodos() {
 }
 ```
 
-That's it! Just import the `useTodos()` hook anywhere in your app! No actions,
+That's it! Just import the appropriate hooks anywhere in your app! No actions,
 no reducers, no thunks or sagas! None of that stuff! Just React Hooks! If you
 need `async` stuff, just do it in a hook!
 
@@ -186,14 +186,16 @@ _Extra Tip:_ By passing in `true` as the 3rd argument for `createSteadyState()`,
 useful data will be logged to the console, as shown below:
 
 ```javascript
-...
-const authState = createSteadyState('auth', {
-    auth: null,
-    user: null,
-    subscription: null,
-    initialized: null,
-}, true) //pass in 'true' here for logging!
-...
+const authState = createSteadyState(
+    'auth',
+    {
+        auth: null,
+        user: null,
+        subscription: null,
+        initialized: null,
+    },
+    true //pass in 'true' here for logging!
+)
 ```
 
 and the console output will look like this:
@@ -223,6 +225,7 @@ Step 1 - Create your Redux store...
 ```javascript
 // src/state/store.js
 import { configureStore } from '@reduxjs/toolkit'
+
 export const store = configureStore({
     reducer: {
         //add reducers here
@@ -269,7 +272,7 @@ Step 4 - Add your new reducer to your store, like this...
 // src/state/store.js
 import { configureStore } from '@reduxjs/toolkit'
 
-import { ui } from 'state/useUi'
+import { ui } from './useUi'
 
 export const store = configureStore({
     reducer: {
