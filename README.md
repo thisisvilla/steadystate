@@ -34,71 +34,77 @@ const todosState = createSteadyState('todos', {
     items: [],
 })
 
-export const { todosReducer, useTodosState } = todosState
+export const { todos, useTodosState, setTodosState } = todosState
 ...
 ```
 
 Thats it! The `createSteadyState()` function takes a 'camelCase' `key` and an
 object representing initial state as it's arguments.
 
-It returns an object with the following two items:
+It returns an object with the following three items:
 
-1. The reducer that you add to your Redux store using the same [key] defined, as
-   shown below. _(This is automatically named based on the key provided, in the
-   form of `[key]Reducer`. So, in this case, it would be `todosReducer`)._
+1. The reducer that you add to your Redux store, which is the same as the [key]
+   used as the first argument of `createSteadyState()`. In this case, it would
+   be `todos`.
 
     ```javascript
     //store.js
     import { configureStore } from '@reduxjs/toolkit'
-    import { todosReducer } from './useTodos.js'
+
+    import { todos } from './useTodos.js'
 
     export const store = configureStore({
         reducer: {
-            todos: todosReducer, //[key]: reducer
+            todos,
         },
     })
     ```
 
-2. It also returns a `use[Key]State` hook as the second item in the object,
-   which returns your state and it's setters. _(This is also based on the
-   provided key, and in this instance, it would be `useTodosState`)._
-
-The newly returned `useTodosState()` hook would return an object that
-destructures as follows:
+2. A `use[Key]State()` hook, to be used for each piece of this state you would
+   like to subscribe to. _(This is based on the provided key. In this instance
+   it would be `useTodosState()`)._
 
 ```javascript
-// useTodos.js
-...
-const { loading, items, setLoading, setItems } = useTodosState()
-...
+const loading = useTodosState('loading')
+const items = useTodosState('items')
+```
+
+3. A `set[Key]State()` hook, which returns an object containing all the setters
+   for your state. _(This is also based on the provided key. In this instance,
+   it would be `setTodosState()`)._
+
+```javascript
+const { setLoading, setItems } = setTodosState()
 ```
 
 As you can see, it automatically generates the setters for your state! You could
-just import that in your app where you want to use and set this global state,
-but I prefer to make another hook that will be used throughout my app, to make
-extending functionality easier! For example:
+just import these in your app where you want to use and set this global state.
+If you'd like to extend functionality, just make a hook! For example:
 
 ```javascript
 // useTodos.js
 ...
 export function useTodos() {
-    const state = useTodosState()
+    const items = useTodosState('items')
+    const loading = useTodosState('loading')
+
+    const { setItems, setLoading } = setTodosState()
 
     const resetTodos = () => {
-        state.setLoading(false)
-        state.setTodos([])
+        setLoading(false)
+        setTodos([])
     }
 
      const addTodo = async todo => {
-        state.setItems([...items, todo])
+        setItems([...items, todo])
 
         // 'await' your persist to db function here
     }
 
     const deleteTodo = async id => {
-        const newItems = state.items.filter(item => item.id !== id)
+        const newItems = items.filter(item => item.id !== id)
 
-        state.setItems(newItems)
+        setItems(newItems)
 
         // 'await' your persist to db function here
     }
@@ -106,7 +112,8 @@ export function useTodos() {
     //...other actions, like updateTodo or whatever, here
 
     return {
-        ...state,
+        items,
+        loading,
         resetTodos,
         addTodo,
         deleteTodo
@@ -115,8 +122,8 @@ export function useTodos() {
 ```
 
 That's it! Just import the `useTodos()` hook anywhere in your app! No actions,
-no reducers, no thunks or sagas! None of that stuff! All your business logic can
-live in a hook, and if you need `async` stuff, just do it in the hook!
+no reducers, no thunks or sagas! None of that stuff! Just React Hooks! If you
+need `async` stuff, just do it in a hook!
 
 _All the awesomeness of Redux without all the hassle!_
 
@@ -131,26 +138,29 @@ const todosState = createSteadyState('todos', {
     items: [],
 })
 
-export const { todosReducer, useTodosState } = todosState
+export const { todosReducer, useTodosState, setTodosState } = todosState
 
 export function useTodos() {
-    const state = useTodosState()
+    const items = useTodosState('items')
+    const loading = useTodosState('loading')
+
+    const { setItems, setLoading } = setTodosState()
 
     const resetTodos = () => {
-        state.setLoading(false)
-        state.setTodos([])
+        setLoading(false)
+        setTodos([])
     }
 
     const addTodo = async todo => {
-        state.setItems([...items, todo])
+        setItems([...items, todo])
 
         // 'await' your persist to db function here
     }
 
     const deleteTodo = async id => {
-        const newItems = state.items.filter(item => item.id !== id)
+        const newItems = items.filter(item => item.id !== id)
 
-        state.setItems(newItems)
+        setItems(newItems)
 
         // 'await' your persist to db function here
     }
@@ -158,7 +168,8 @@ export function useTodos() {
     //...other actions, like updateTodo or whatever, here
 
     return {
-        ...state,
+        items,
+        loading,
         resetTodos,
         addTodo,
         deleteTodo,
@@ -186,7 +197,7 @@ const authState = createSteadyState('auth', {
 ```
 
 and the console output will look like this:
-![Console Logging](https://i.ibb.co/LYbkmRk/Screenshot-2021-07-28-at-11-22-03.png)
+![Console Logging](https://i.ibb.co/WFZ0dwT/Screenshot-2021-08-14-at-20-53-11.png)
 
 ;)
 
@@ -240,7 +251,6 @@ Step 3 - Create Some State, using Steady State and React Hooks!
 ```javascript
 // src/state/useUi.js
 import { createSteadyState } from 'steadystate'
-import { useEffect } from 'react'
 
 const uiState = createSteadyState('ui', {
     loading: false,
@@ -250,28 +260,20 @@ const uiState = createSteadyState('ui', {
     lang: 'en',
 })
 
-export const { uiReducer, useUiState } = uiState
-
-export function useUi() {
-    const state = useUiState()
-
-    // define your actions as functions here...
-
-    return { ...state }
-}
+export const { ui, useUiState, setUiState } = uiState
 ```
 
-Step 4 - Add your new reducer to the store using the same [key] defined earlier,
-like this...
+Step 4 - Add your new reducer to your store, like this...
 
 ```javascript
 // src/state/store.js
 import { configureStore } from '@reduxjs/toolkit'
-import { uiReducer } from 'state/useUi'
+
+import { ui } from 'state/useUi'
 
 export const store = configureStore({
     reducer: {
-        ui: uiReducer, //[key]: reducer
+        ui,
     },
 })
 ```

@@ -1,15 +1,16 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { useSteadyState } from './useSteadyState'
+import { setSteadyState } from './setSteadyState'
 import { toCamelCase, handleLog } from './util'
 
-export function createSteadyState(key, initialState = {}, log = false) {
-    const camelCaseKey = toCamelCase(key)
+export function createSteadyState(stateKey, initialState = {}, log = false) {
+    const camelCaseKey = toCamelCase(stateKey)
     const uppercaseKey =
         camelCaseKey.charAt(0).toUpperCase() + camelCaseKey.slice(1)
 
-    if (key !== camelCaseKey)
+    if (stateKey !== camelCaseKey)
         console.error(
-            `The provided key of '${key}' is not camelCase and should be changed to '${camelCaseKey}'. Please update your code.`
+            `The provided key of '${stateKey}' is not camelCase and should be changed to '${camelCaseKey}'. Please update your code.`
         )
 
     let stateArr = Object.keys(initialState)
@@ -38,14 +39,16 @@ export function createSteadyState(key, initialState = {}, log = false) {
         reducers: reducerObj,
     })
 
-    const reducerName = `${camelCaseKey}Reducer`
-    const hookName = `use${uppercaseKey}State`
+    const reducerName = `${camelCaseKey}`
+    const useStateName = `use${uppercaseKey}State`
+    const setStateName = `set${uppercaseKey}State`
 
     if (log) {
         handleLog(
             camelCaseKey,
             reducerName,
-            hookName,
+            useStateName,
+            setStateName,
             initialState,
             state.actions
         )
@@ -53,6 +56,7 @@ export function createSteadyState(key, initialState = {}, log = false) {
 
     return {
         [reducerName]: state.reducer,
-        [hookName]: () => useSteadyState(camelCaseKey, state.actions),
+        [useStateName]: sliceKey => useSteadyState(camelCaseKey, sliceKey),
+        [setStateName]: () => setSteadyState(state.actions),
     }
 }
