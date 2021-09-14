@@ -3,40 +3,54 @@ import { useSteadyState } from './useSteadyState'
 import { setSteadyState } from './setSteadyState'
 import { toCamelCase, handleLog } from './util'
 
-export function createSteadyState(stateKey, initialState = {}, log = false) {
-    const camelCaseKey = toCamelCase(stateKey)
+export function createSteadyState({
+    key,
+    initialState = {},
+    actions = {},
+    log = false,
+}) {
+    const camelCaseKey = toCamelCase(key)
     const uppercaseKey =
         camelCaseKey.charAt(0).toUpperCase() + camelCaseKey.slice(1)
 
-    if (stateKey !== camelCaseKey)
+    if (key !== camelCaseKey)
         console.error(
-            `The provided key of '${stateKey}' is not camelCase and should be changed to '${camelCaseKey}'. Please update your code.`
+            `The provided key of '${key}' is not camelCase and should be changed to '${camelCaseKey}'. Please update your code.`
         )
 
     let stateArr = Object.keys(initialState)
 
-    const reducerObj = stateArr.reduce((obj, curr) => {
-        let camelCase = toCamelCase(curr)
+    const reducerObj = stateArr.reduce(
+        (obj, curr) => {
+            let camelCase = toCamelCase(curr)
 
-        if (curr !== camelCase)
-            console.error(
-                `The provided key of '${curr}' is not camelCase and should be changed to '${camelCase}'. Please update your code.`
-            )
+            if (curr !== camelCase)
+                console.error(
+                    `The provided key of '${curr}' is not camelCase and should be changed to '${camelCase}'. Please update your code.`
+                )
 
-        const uppercase = camelCase.charAt(0).toUpperCase() + camelCase.slice(1)
+            const uppercase =
+                camelCase.charAt(0).toUpperCase() + camelCase.slice(1)
 
-        obj[`set${uppercase}`] = (state, { payload }) => {
-            if (state[camelCase] === payload) return
-            state[camelCase] = payload
+            obj[`set${uppercase}`] = (state, { payload }) => {
+                if (state[camelCase] === payload) return
+                state[camelCase] = payload
+            }
+
+            return obj
+        },
+        {
+            [`reset${uppercaseKey}`]: () => initialState,
         }
-
-        return obj
-    }, {})
+    )
 
     const state = createSlice({
         name: camelCaseKey,
         initialState: initialState,
-        reducers: reducerObj,
+        reducers: {
+            ...reducerObj,
+            ...actions,
+        },
     })
 
     const reducerName = `${camelCaseKey}`
