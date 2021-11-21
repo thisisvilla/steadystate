@@ -98,8 +98,6 @@ Redux Toolkit reducers, like so:
 // todos.js
 import { createSteadyState } from 'steadystate'
 
-const key = 'todos'
-
 const initialState = {
     loading: false,
     items: [],
@@ -107,24 +105,21 @@ const initialState = {
 
 const actions = {
     addTodo: (state, { payload }) => {
-    	state.items.push(payload)
+        state.items.push(payload)
     },
     deleteTodo: (state, { payload }) => {
-    	 state.items = state.items.filter(item => item.id !== payload.id)
+        state.items = state.items.filter(item => item.id !== payload.id)
     },
     updateTodo: (state, { payload }) => {
-    	const removed = state.items.filter(item => item.id !== payload.id),
-        state.items = [
-            ...removed,
-            payload
-        ]
-    }
+        const removed = state.items.filter(item => item.id !== payload.id)
+
+        state.items = [...removed, payload]
+    },
 }
 
-const todosState = createSteadyState({ key, initialState, actions })
+const todosState = createSteadyState({ key: 'todos', initialState, actions })
 
 export const { todos, useTodosState, setTodosState } = todosState
-
 ```
 
 Pretty cool, eh? :)
@@ -142,8 +137,6 @@ logged to the console, as shown below:
 // auth.js
 import { createSteadyState } from 'steadystate'
 
-const key = 'auth'
-
 const initialState = {
     auth: null,
     user: null,
@@ -151,7 +144,7 @@ const initialState = {
     initialized: null,
 }
 
-const authState = createSteadyState({ key, initialState, log: true })
+const authState = createSteadyState({ key: 'auth', initialState, log: true })
 
 export const { auth, useAuthState, setAuthState } = authState
 ```
@@ -215,8 +208,6 @@ export default function App({ Component, pageProps }) {
 // src/state/ui.js
 import { createSteadyState } from 'steadystate'
 
-const key = 'ui'
-
 const initialState = {
     loading: false,
     menuActive: false,
@@ -225,7 +216,7 @@ const initialState = {
     lang: 'en',
 }
 
-const uiState = createSteadyState({ key, initialState })
+const uiState = createSteadyState({ key: 'ui', initialState })
 
 export const { ui, useUiState, setUiState } = uiState
 ```
