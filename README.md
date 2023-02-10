@@ -1,6 +1,6 @@
 # Steady State
 
-by pseudo selector
+by villa
 
 ![npm](https://img.shields.io/npm/dt/steadystate?color=%235A6B5F&label=downloads&style=for-the-badge)
 ![npm bundle size](https://img.shields.io/bundlephobia/minzip/steadystate?color=%23BB8758&style=for-the-badge)

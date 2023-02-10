@@ -2,7 +2,7 @@
     "name": "steadystate",
     "version": "0.5.3",
     "description": "The easiest way to use Redux with React!",
-    "author": "@pseudoselector",
+    "author": "@thisisvilla",
     "main": "dist/umd/steadystate.js",
     "module": "dist/mjs/steadystate.mjs",
     "files": [
@@ -11,7 +11,7 @@
         "dist/typings/"
     ],
     "license": "MIT",
-    "homepage": "https://github.com/pseudoselector/steadystate#readme",
+    "homepage": "https://github.com/thisisvilla/steadystate#readme",
     "scripts": {
         "start": "rollup -c --watch --environment SERVE:true",
         "build": "npm run test && rollup -c",
@@ -47,9 +47,9 @@
         "rollup-plugin-terser": "^7.0.2"
     },
     "peerDependencies": {
-        "@reduxjs/toolkit": "^1.6.1",
-        "react": "^17.0.2",
-        "react-dom": "^17.0.2",
-        "react-redux": "^7.2.4"
+        "@reduxjs/toolkit": "^1.9.2",
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0",
+        "react-redux": "^8.0.5"
     }
 }
